@@ -1,6 +1,7 @@
 require 'json'
 require 'rest-client'
 require 'net/http'
+require_relative 'lib/CityPick.rb'
 
 def show_message(message)
   puts message
@@ -19,6 +20,9 @@ def generate_json(city)
   city_resp = Net::HTTP.get_response(URI.parse(city_url))
   city_data = city_resp.body 
   city_ruby = JSON.parse(city_data)  
+
+  city = CityPick.new(city, city_ruby['photos']['total'])
+  city.tag_count.to_i
 end
 
 def evaluate_destination(city1, city2, profile)
@@ -37,28 +41,24 @@ def evaluate_destination(city1, city2, profile)
   end
 end
 
+ show_message("It's Flickr Time! Let's use shutterbug stats to choose a vacation spot")
+ show_message("Let's figure out your style. Enter 1 if you like bustling spots or Enter 2 if you like quieter spots:")
 
-show_message("It's Flickr Time! Let's use shutterbug stats to choose a vacation spot")
-show_message("Let's figure out your style. Enter 1 if you like bustling spots or Enter 2 if you like quieter spots:")
+ user_type = get_choice
 
-user_type = get_choice
+ show_message("Cool. Now enter your first city pick:")
 
-show_message("Cool. Now enter your first city pick:")
+ first_city = get_input
 
-first_city = get_input
+ show_message("Now enter your second city pick:")
 
-show_message("Now enter your second city pick:")
+ second_city = get_input
 
-second_city = get_input
-
-first_city_json = generate_json(first_city)
-second_city_json = generate_json(second_city) 
-
-city_choice = evaluate_destination(first_city_json["photos"]["total"], second_city_json["photos"]["total"], user_type)
+ city_choice = evaluate_destination(generate_json(first_city), generate_json(second_city), user_type)
  
-puts "Your next city should be " + (city_choice == 1 ? first_city : second_city)
+ puts "Your next city should be " + (city_choice == 1 ? first_city : second_city)
 
-puts "Goodbye!"
+ puts "Goodbye!"
 
-puts "Thank you for using Shutterbug!"
+ puts "Thank you for using Shutterbug!"
 
