@@ -1,6 +1,15 @@
 class StoriesController < ApplicationController
   def index
+    #Uses the method that is defined in models/story.rb (self.Search)
+
     @stories = Story.search_for params[:q]
+  end
+
+  def search
+    #Uses the method that is defined in models/story.rb (self.Search)
+
+    @stories = Story.search_for params[:q]
+    render :index
   end
 
   def show
@@ -16,6 +25,7 @@ class StoriesController < ApplicationController
     @story = Story.new safe_story_params
     @story.upvotes = 1
     if @story.save
+      #@story path
       redirect_to @story
     else
       render :new

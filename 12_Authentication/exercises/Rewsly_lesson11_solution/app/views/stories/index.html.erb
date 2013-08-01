@@ -1,4 +1,10 @@
 <h1>Welcome to Rewsly</h1>
+<p>
+	<% unless user_signed_in? %>
+		<%= link_to 'Login', new_user_session_path %>
+	<% end %>
+</p>
+
 <%= render 'search' %>
 <%= link_to "Add a new story", new_story_path %>
 <section id="stories">
